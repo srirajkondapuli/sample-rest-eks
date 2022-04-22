@@ -1,0 +1,132 @@
+openapi: 3.0.1
+info:
+  title: Tokenization Service
+  description: This is a rest api for Tokenization Service.
+  contact:
+    email: email@wnco.com
+  version: 1.1.0
+externalDocs:
+  description: Find out more about Tokenization Service
+  url: >-
+    https://confluence-tools.myown.com/display
+servers:
+  - url: http://localhost:8080
+paths:
+  /creditcard/tokenization:
+    post:
+      summary: Tokenize a credit card number
+      operationId: tokenizeCreditCard
+      requestBody:
+        description: Request to tokenize a credit card number.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenizeRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/TokenizeRequest'
+        required: true
+      responses:
+        '200':
+          description: >-
+            Response to the credit card tokenization request, containing the
+            associated token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenizeResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/TokenizeResponse'
+        '400':
+          description: Invalid Credit card number supplied
+          content: {}
+        '401':
+          description: Authentication failure
+          content: {}
+        '403':
+          description: Authorization failure
+          content: {}
+        '404':
+          description: Credit card number not found
+          content: {}
+        '500':
+          description: Internal error during request processing
+          content: {}
+  /creditcard/detokenization:
+    post:
+      summary: Detokenize a credit card number
+      operationId: detokenizeCreditCard
+      requestBody:
+        description: Request to get the credit card number associated with a token.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetokenizeRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DetokenizeRequest'
+        required: true
+      responses:
+        '200':
+          description: >-
+            Response to the credit card detokenization request, containing the
+            actual credit card number.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetokenizeResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DetokenizeResponse'
+        '400':
+          description: Invalid token supplied
+          content: {}
+        '401':
+          description: Authentication failure
+          content: {}
+        '403':
+          description: Authorization failure
+          content: {}
+        '500':
+          description: Internal error during request processing
+          content: {}
+components:
+  schemas:
+    TokenizeRequest:
+      type: object
+      properties:
+        creditCardNumber:
+          type: string
+          pattern: ^[0-9]([0-9]*([0-9]+[ |-]?[0-9]*)[0-9]*)*[0-9]$
+          minLength: 13
+          maxLength: 23
+      xml:
+        name: TokenizeRequest
+    TokenizeResponse:
+      type: object
+      properties:
+        creditCardToken:
+          type: string
+          minLength: 13
+          maxLength: 23
+      xml:
+        name: TokenizeResponse
+    DetokenizeRequest:
+      type: object
+      properties:
+        creditCardToken:
+          type: string
+          minLength: 13
+          maxLength: 23
+      xml:
+        name: DetokenizeRequest
+    DetokenizeResponse:
+      type: object
+      properties:
+        creditCardNumber:
+          type: string
+          minLength: 13
+          maxLength: 23
+      xml:
+        name: DetokenizeResponse

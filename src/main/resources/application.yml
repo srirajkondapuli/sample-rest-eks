@@ -1,0 +1,106 @@
+---
+# application configuration for profile=default
+spring:
+  profiles:
+    active: default
+  application:
+    name: "java-rest-eks"
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    config:
+      fail-fast: true
+      enabled: false
+    discovery:
+      enabled: false
+      client:
+        enabled: false
+        health-indicator:
+          enabled: false
+        composite-indicator:
+          enabled: false
+    kubernetes:
+      discovery:
+        enabled: true
+      enabled: true
+      config:
+        enabled: false
+        enable-api: false
+        namespace: java-rest-eks
+        sources:
+          - name: ${spring.application.name}-configmap
+      secrets:
+        enabled: false
+        enable-api: false
+        namespace: java-rest-eks
+        sources:
+          - name: ${spring.application.name}-secret
+
+application:
+  encryption:
+    url: http://localhost:8000
+
+
+server:
+  port: 8000
+  cloud:
+    config:
+      fail-fast: true
+      server:
+        bootstrap: false
+      enabled: false
+springdoc:
+  packagesToScan: com.myown.app.sample.api
+  pathsToMatch:
+    - /
+    - /creditcard/**
+    - /simulate/**
+    - /api/**
+kubernetes:
+  secretsmanager:
+    enabled: false
+    basePath: /app/secrets
+    accounts:
+    - java-rest-eks-app-secret
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: configprops,beans,mappings,env,health,refresh,httptrace
+  endpoint:
+    info:
+      enabled: true
+    mappings:
+      enabled: true
+    beans:
+      enabled: true
+
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+---
+  # application configuration for profile=kubernetes
+spring:
+  config:
+    activate:
+      on-profile: kubernetes
+
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    config:
+      fail-fast: true
+      enabled: false
+    discovery:
+      enabled: true
+---
+  # application configuration for profile=kubernetes
+spring:
+  config:
+    activate:
+      on-profile: integration
+
+

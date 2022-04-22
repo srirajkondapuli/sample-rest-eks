@@ -1,0 +1,9 @@
+{
+  "apiPackage": "com.myown.app.sample.api",
+  "modelPackage": "com.myown.app.sample.model",
+  "dateLibrary": "java8",
+  "useBeanValidation": true,
+  "interfaceOnly": true,
+  "hideGenerationTimestamp": true,
+  "openApiNullable": false
+}

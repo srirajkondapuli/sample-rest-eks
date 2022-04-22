@@ -1,0 +1,39 @@
+spring:
+  cloud:
+    discovery:
+      enabled: true
+      client:
+        enabled: false
+        health-indicator:
+          enabled: true
+        composite-indicator:
+          enabled: true
+
+    config:
+      discovery:
+        enabled: false
+      fail-fast: true
+      enabled: false
+
+    kubernetes:
+      discovery:
+        enabled: true
+      config:       
+        enabled: true
+        enable-api: true
+        sources:
+          - name: ${spring.application.name}-configmap   
+      secrets:
+        enabled: true
+        enable-api: true
+        sources:
+          - name: ${spring.application.name}-secret          
+      reload:
+        monitoring-config-maps: true
+        monitoring-secrets: true
+        enabled: true
+        strategy: refresh
+        mode: event
+        period: 10000          
+
+ 

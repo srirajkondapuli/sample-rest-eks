@@ -12,15 +12,12 @@ description = "A sample Spring-Boot application which deploys to EKS."
 group = "com.myown.ef.samples"
 version = "0.0.0"
 
-
-
 repositories {
     mavenLocal()
     mavenCentral()
-        maven {
-      url = uri("https://plugins.gradle.org/m2/")
+    maven {
+        url = uri("https://plugins.gradle.org/m2/")
     }
-
 }
 
 java {
@@ -28,10 +25,6 @@ java {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
-
-
-
-
 
 dependencies {
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:2.6.7"))
@@ -49,6 +42,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
 
     implementation("io.grpc:grpc-okhttp:1.45.0")
 
@@ -60,7 +55,7 @@ dependencies {
     implementation("javax.cache:cache-api:1.1.1")
     implementation("org.ehcache:ehcache:3.8.0")
     // implementation("org.apache.logging.log4j:log4j-layout-template-json:2.17.2")
-
+    implementation("org.slf4j:jul-to-slf4j:1.7.36")
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("org.springframework.cloud:spring-cloud-starter")
@@ -71,11 +66,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8")
     implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8-config")
 
-
-
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-
 }
 
 openApiGenerate {

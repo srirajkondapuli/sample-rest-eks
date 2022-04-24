@@ -9,7 +9,21 @@
             <pattern>%green([%thread]) %highlight(%-5level) %cyan(%logger{15}:) %yellow(%M\(%line\)) - %msg %n</pattern>
         </encoder>
     </appender>
-    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="JSON_OUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+
+
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                    <prettyPrint>true</prettyPrint>
+                </jsonFormatter>
+            </layout>
+        </encoder>
+    </appender>
+    <appender name="FILE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -29,19 +43,19 @@
     </appender>
 
     <logger name="com.myown" level="debug" additivity="false">
-        <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="FILE_ROLLING"/>
          <appender-ref ref="STDOUT"/>
     </logger>
     <logger name="org.springframework" level="debug" additivity="false">
-        <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="FILE_ROLLING"/>
          <appender-ref ref="STDOUT"/>
     </logger>
         <logger name="io.opentelemetry" level="debug" additivity="false">
-        <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="FILE_ROLLING"/>
          <appender-ref ref="STDOUT"/>
     </logger>
     <root level="INFO">
-        <appender-ref ref="FILE-ROLLING"/>
+        <appender-ref ref="FILE_ROLLING"/>
         <appender-ref ref="STDOUT"/>
     </root>
 

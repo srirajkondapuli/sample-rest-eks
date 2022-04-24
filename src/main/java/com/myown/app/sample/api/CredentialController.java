@@ -1,8 +1,9 @@
 
 package com.myown.app.sample.api;
 
+import com.myown.app.sample.component.Logger;
+import com.myown.app.sample.component.LoggerFactory;
 import com.myown.app.sample.service.CredentialProvider;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 public class CredentialController {
     private final CredentialProvider credentialProvider;
+    public static Logger logger = LoggerFactory.getLogger(CredentialController.class);
 
     public CredentialController(CredentialProvider credentialProvider) {
 
@@ -33,15 +35,23 @@ public class CredentialController {
     @GetMapping("/{id}")
     @WithSpan
     public String index(@PathVariable String id) {
-
         String credential = "";
+        try {
+            Span currentSpan = Span.current();
+            //MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
+            //MDC.put("trace_id", currentSpan.getSpanContext().getSpanId());
 
-        log.info("Get Credential for id = {}", id);
+            // log.info("Get Credential for id = {}", id);
+            logger.info().message("Get Credential for id = " + id).log();
 
-        credential = credentialProvider.getCredential(id);
-        log.info("Response Credential for is: {}", credential);
-        doSomeWorkNewSpan();
-
+            credential = credentialProvider.getCredential(id);
+            // log.info("Response Credential for is: {}", credential);
+            logger.info().message("Response Credential for is = " + credential).log();
+            doSomeWorkNewSpan();
+        } finally {
+            //MDC.remove("trace_id");
+            //MDC.remove("span_id");
+        }
         return credential;
 
     }
@@ -55,19 +65,21 @@ public class CredentialController {
         try {
 
             log.info("Get Encrypted Credential for id = {}", id);
+            logger.info().message("Get Encrypted Credential for id = 23456").log();
             String credential = credentialProvider.getCredential(id);
             Span currentSpan = Span.current();
-            MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
-            MDC.put("trace_id", currentSpan.getSpanContext().getSpanId());
+            //MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
+            //MDC.put("trace_id", currentSpan.getSpanContext().getSpanId());
 
             log.info("Encryption URL : {}", encryptionUrl);
+            logger.info().message("Encryption URL : = " + encryptionUrl).log();
             WebClient webClient = WebClient.create(encryptionUrl);
 
             encryptedCredential = webClient.get().uri("/api/encryption/enc/" + credential)
                     .retrieve().bodyToMono(String.class).block();
         } finally {
-            MDC.remove("trace_id");
-            MDC.remove("span_id");
+            //MDC.remove("trace_id");
+           // MDC.remove("span_id");
         }
 
 

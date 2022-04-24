@@ -155,4 +155,6 @@ public class Logger {
     logger.setIncludeLoggerName(this.includeLoggerName);
     logger.setIncludeThreadName(this.includeThreadName);
   }
+
+
 }

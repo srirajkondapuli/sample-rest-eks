@@ -14,12 +14,12 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.extension.annotations.WithSpan;
-import lombok.extern.slf4j.Slf4j;
+import lombok.CustomLog;
 
 @RestController
 @RequestMapping("/api/credential")
-@Slf4j
-
+//@Slf4j
+@CustomLog
 public class CredentialController {
     private final CredentialProvider credentialProvider;
     public static Logger logger = LoggerFactory.getLogger(CredentialController.class);
@@ -41,12 +41,12 @@ public class CredentialController {
             //MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
             //MDC.put("trace_id", currentSpan.getSpanContext().getSpanId());
 
-            // log.info("Get Credential for id = {}", id);
-            logger.info().message("Get Credential for id = " + id).log();
+            log.info().message("Get Credential for id = {%s}", id).log();;
+            logger.info().message("Get Credential for id = %s", id);
 
             credential = credentialProvider.getCredential(id);
-            // log.info("Response Credential for is: {}", credential);
-            logger.info().message("Response Credential for is = " + credential).log();
+            log.info().message("Response Credential for is: {%s}", credential);
+            logger.info().message("Response Credential for is = %s",credential);
             doSomeWorkNewSpan();
         } finally {
             //MDC.remove("trace_id");
@@ -64,15 +64,16 @@ public class CredentialController {
         String encryptedCredential = id;
         try {
 
-            log.info("Get Encrypted Credential for id = {}", id);
+            log.info().message("Get Encrypted Credential for id = %s", id).log();;
             logger.info().message("Get Encrypted Credential for id = 23456").log();
             String credential = credentialProvider.getCredential(id);
             Span currentSpan = Span.current();
             //MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
             //MDC.put("trace_id", currentSpan.getSpanContext().getSpanId());
 
-            log.info("Encryption URL : {}", encryptionUrl);
-            logger.info().message("Encryption URL : = " + encryptionUrl).log();
+
+            log.info().message("Encryption URL : %s" , encryptionUrl).log();;
+            logger.info().message("Encryption URL : = %s", encryptionUrl).log();
             WebClient webClient = WebClient.create(encryptionUrl);
 
             encryptedCredential = webClient.get().uri("/api/encryption/enc/" + credential)
@@ -88,7 +89,7 @@ public class CredentialController {
 
     @WithSpan
     private void doSomeWorkNewSpan() {
-        log.info("Doing some work In New span");
+        log.info().message("Doing some work In New span").log();;
         Span span = Span.current();
 
         span.setAttribute("attribute.a2", "some value");

@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.opentelemetry.extension.annotations.WithSpan;
-import lombok.extern.slf4j.Slf4j;
+import lombok.CustomLog;
 @RestController
 @RequestMapping("/api/encryption")
-@Slf4j
-
+//@Slf4j
+@CustomLog
 public class EncryptionController {
 
 
@@ -23,7 +23,7 @@ public class EncryptionController {
     @WithSpan
     @GetMapping(path="/enc/{id}")
     public String encrypt(@PathVariable String id) {
-        log.info("Encrypt Value for id = {}", id);
+        log.info().message("Encrypt Value for id = %s", id).log();;
 
         String encString="";
         try {
@@ -32,7 +32,7 @@ public class EncryptionController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        log.info("Encrypted Value for id = {}", encString);
+        log.info().message("Encrypted Value for id = %s", encString).log();;
         return encString;
     }
 
@@ -40,7 +40,7 @@ public class EncryptionController {
     @PostMapping(path = "/decrypt",produces = { "text/plain" }, consumes = { "text/plain","application/json", "application/xml" })
     @WithSpan
     public String deCrypt(@RequestBody String id) {
-        log.info("DeCrypt Value for id = {}", id);
+        log.info().message("DeCrypt Value for id = %s", id).log();;
 
         String decString="";
         try {
@@ -50,7 +50,7 @@ public class EncryptionController {
             e.printStackTrace();
         }
 
-        log.info("Encrypted Value for id = {}", decString);
+        log.info().message("Encrypted Value for id = %s", decString).log();;
         return decString;
     }
 

@@ -94,4 +94,13 @@ public class NoopLogger implements JsonLogger {
   public void log() {
 
   }
+
+@Override
+public JsonLogger message(String message, Object... args) {
+
+    String.format(message,args);
+
+    return this;
+
+}
 }

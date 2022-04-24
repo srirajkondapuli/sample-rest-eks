@@ -34,6 +34,11 @@ public interface JsonLogger {
   JsonLogger message(String message);
 
   /**
+   * Set top level message field.  Convenience method for .field("message", ... )
+   */
+  JsonLogger message(String message, Object... args);
+
+  /**
    * Set top level message field as a lambda or supplier that is lazily evaluated only if the message is logged
    */
   JsonLogger message(Supplier<String> message);

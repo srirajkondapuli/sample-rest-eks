@@ -66,7 +66,7 @@ public class LoggerFactory {
 // Factory API
 //----------------------------------------
 
-  public static Logger getLogger(String name) {
+  public  static Logger getLogger(String name) {
     org.slf4j.Logger slf4jLogger = org.slf4j.LoggerFactory.getLogger(name);
     Logger result = new Logger(slf4jLogger, formatter);
     configureLogger(result);

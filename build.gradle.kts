@@ -56,6 +56,8 @@ dependencies {
     implementation("org.ehcache:ehcache:3.8.0")
     // implementation("org.apache.logging.log4j:log4j-layout-template-json:2.17.2")
     implementation("org.slf4j:jul-to-slf4j:1.7.36")
+    //implementation("org.slf4j:jcl-over-slf4j:1.7.36")
+
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("org.springframework.cloud:spring-cloud-starter")

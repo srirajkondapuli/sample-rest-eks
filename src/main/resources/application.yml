@@ -42,7 +42,7 @@ application:
 
 
 server:
-  port: 8000
+  port: 9000
   cloud:
     config:
       fail-fast: true

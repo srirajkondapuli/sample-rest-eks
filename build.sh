@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "SpringBoot REST EKS Build!!"
-# gradle clean build -x test --info
+gradle clean build -x test --info
 echo "SpringBoot REST EKS App create Docker Image!!"
 datetime=`date "+%Y-%m-%d-%H%M%S"`
 echo $name

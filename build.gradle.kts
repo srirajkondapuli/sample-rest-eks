@@ -26,9 +26,21 @@ java {
     }
 }
 
+configurations {
+    all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    }
+}
+
 dependencies {
     implementation(enforcedPlatform("org.springframework.boot:spring-boot-dependencies:2.6.7"))
     implementation(enforcedPlatform("org.springframework.cloud:spring-cloud-dependencies:2021.0.1"))
+
+    implementation("com.datadoghq:dd-trace-api:0.100.0")
+    implementation("com.datadoghq:dd-trace-ot:0.100.0")
+
+    implementation("com.datadoghq:dd-trace:0.2.12")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -37,26 +49,30 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.swagger.parser.v3:swagger-parser:2.0.30")
     implementation("org.springframework.boot:spring-boot-autoconfigure")
-    // implementation("org.springframework.boot:spring-boot-starter-log4j2")
-    // implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("ch.qos.logback:logback-classic:1.2.1")
     implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
     implementation("ch.qos.logback.contrib:logback-jackson:0.1.5")
 
-    implementation("io.grpc:grpc-okhttp:1.45.0")
+
+
+
 
     implementation("io.swagger:swagger-annotations:1.6.5")
-    implementation("org.springdoc:springdoc-openapi-core:1.1.49")
+
     implementation("io.opentelemetry.instrumentation:opentelemetry-spring-starter:1.11.1-alpha")
+
+    implementation("org.json:json:20220320")
 
     implementation("org.springframework.boot:spring-boot-starter-cache:2.2.2.RELEASE")
     implementation("javax.cache:cache-api:1.1.1")
     implementation("org.ehcache:ehcache:3.8.0")
     // implementation("org.apache.logging.log4j:log4j-layout-template-json:2.17.2")
     implementation("org.slf4j:jul-to-slf4j:1.7.36")
-    //implementation("org.slf4j:jcl-over-slf4j:1.7.36")
+    implementation("org.slf4j:jcl-over-slf4j:1.7.36")
 
     runtimeOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -65,6 +81,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-context")
     implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
 
+
     implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8")
     implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-fabric8-config")
 
@@ -72,25 +89,15 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
-openApiGenerate {
-    generatorName.set("spring")
-    inputSpec.set("$projectDir/src/main/resources/tokenization-schema.yml")
-    outputDir.set("$buildDir/generated")
-    configFile.set("$projectDir/src/main/resources/api-config.json")
-}
 
-openApiValidate {
-    inputSpec.set("$projectDir/src/main/resources/tokenization-schema.yml")
-}
+
+
 
 java.sourceSets["main"].java {
     srcDir("$buildDir/generated/src/main/java")
 }
 
-tasks.named<JavaCompile>("compileJava") {
-    dependsOn("openApiValidate")
-    dependsOn("openApiGenerate")
-}
+
 
 tasks.named<Jar>("jar") {
     enabled = false

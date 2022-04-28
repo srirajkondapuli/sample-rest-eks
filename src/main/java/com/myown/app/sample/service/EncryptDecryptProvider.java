@@ -8,8 +8,6 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import com.myown.app.sample.component.Logger;
-import com.myown.app.sample.component.LoggerFactory;
 import com.myown.app.sample.util.CryptoUtil;
 
 /**
@@ -30,7 +28,7 @@ public class EncryptDecryptProvider {
     private static final int AES_KEY_BIT = 256;
     private static SecretKey secretKey ;
     private static final Charset UTF_8 = StandardCharsets.UTF_8;
-    public static Logger logger = LoggerFactory.getLogger(EncryptDecryptProvider.class);
+    //public static Logger logger = LoggerFactory.getLogger(EncryptDecryptProvider.class);
     public EncryptDecryptProvider(){
 
         try {
@@ -140,7 +138,7 @@ public class EncryptDecryptProvider {
 
         String encryptedString = Base64.getEncoder().encodeToString(encryptedText);
         System.out.println(String.format(OUTPUT_FORMAT, "Encrypted (Text) (block = 16)", encryptedString,16));
-        logger.info().message("Encrypted String = %s",encryptedString).log();;
+        //logger.info().message("Encrypted String = %s",encryptedString).log();;
         return encryptedString;
     }
     public String decrypt(String toBeDeCrypted){

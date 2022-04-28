@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.opentelemetry.extension.annotations.WithSpan;
 import lombok.CustomLog;
 @RestController
 @RequestMapping("/api/encryption")
@@ -20,7 +19,6 @@ public class EncryptionController {
     @Autowired
     EncryptDecryptProvider provider;
 
-    @WithSpan
     @GetMapping(path="/enc/{id}")
     public String encrypt(@PathVariable String id) {
         log.info().message("Encrypt Value for id = %s", id).log();;
@@ -38,7 +36,6 @@ public class EncryptionController {
 
 
     @PostMapping(path = "/decrypt",produces = { "text/plain" }, consumes = { "text/plain","application/json", "application/xml" })
-    @WithSpan
     public String deCrypt(@RequestBody String id) {
         log.info().message("DeCrypt Value for id = %s", id).log();;
 

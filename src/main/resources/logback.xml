@@ -4,6 +4,56 @@
         <resetJUL>true</resetJUL>
     </contextListener>
     <property name="HOME_LOG" value="logs/app.log"/>
+    <property name="CHARSET" value="UTF-8"/>
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
+    <springProperty scope="context" name="AppName" source="spring.application.name"/>
+
+    <appender name="HTTP" class="com.myown.app.sample.component.HttpAppender">
+        <!-- <url>http://localhost:8000/logs</url> -->
+        <url>https://http-intake.logs.datadoghq.com/api/v2/logs</url>
+        <contentType>json</contentType>
+        <headers>{"DD-API-Key": "f30163034aa223ea159667b9b862eafe", "DD-APPLICATION-KEY": "d8b677f9e238749148312fe2d27e1f25dd6866ab"}</headers>
+        <body>                        {
+                        "severity": "%level",
+                        "service": "${AppName}",
+                        "pid": "${PID}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message",
+                        "event": "%message",
+                        "host": "${hostname}",
+                        "source": "minikube"
+                        }</body>
+        <!-- <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder> -->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <providers>
+                <timestamp/>
+                <pattern>
+                    <pattern>
+                        {
+                        "severity": "%level",
+                        "service": "${AppName}",
+                        "dd.trace_id": "%X{trace_id}",
+                        "dd.span_id": "%X{span_id}",
+                        "baggage": "%X{key:-}",
+                        "pid": "${PID:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message",
+                        "event": "%message",
+                        "host": "${hostname}",
+                        "source": "minikube"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+
+        </encoder>
+    </appender>
 
     <appender name="STDOUT_TEST" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
@@ -12,17 +62,30 @@
         </encoder>
     </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <providers>
+                <timestamp/>
+                <pattern>
+                    <pattern>
+                        {
+                        "severity": "%level",
+                        "service": "${AppName}",
+                        "dd.trace_id": "%X{trace_id}",
+                        "dd.span_id": "%X{span_id}",
+                        "baggage": "%X{key:-}",
+                        "pid": "${PID:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "message": "%message",
+                        "event": "%message",
+                        "host": "${hostname}",
+                        "source": "minikube"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
 
-
-            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
-                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
-
-                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
-                    <prettyPrint>true</prettyPrint>
-                </jsonFormatter>
-            </layout>
         </encoder>
     </appender>
     <appender name="FILE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -39,8 +102,20 @@
             <maxHistory>60</maxHistory>
         </rollingPolicy>
 
-        <encoder>
-            <pattern>%d %p %c{1.} [%t] %m%n</pattern>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <providers>
+                <timestamp/>
+                <message/>
+                <loggerName/>
+                <threadName/>
+                <logLevel/>
+                <logLevelValue/>
+                <stackTrace/>
+                <logstashMarkers/>
+                <mdc/>
+                <tags/>
+            </providers>
         </encoder>
     </appender>
 
@@ -56,11 +131,12 @@
         <appender-ref ref="FILE_ROLLING"/>
         <appender-ref ref="STDOUT"/>
     </logger>
-        <logger name="com.swacorp" level="debug" additivity="false">
+    <logger name="com.myown" level="info" additivity="false">
         <appender-ref ref="FILE_ROLLING"/>
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="HTTP"/>
     </logger>
-    <root level="INFO">
+    <root level="debug">
         <appender-ref ref="FILE_ROLLING"/>
         <appender-ref ref="STDOUT"/>
     </root>

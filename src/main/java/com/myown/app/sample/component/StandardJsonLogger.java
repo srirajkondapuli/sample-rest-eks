@@ -121,12 +121,37 @@ public class StandardJsonLogger implements JsonLogger {
         try {
 
 
-            String formattedMessage = String.format(message, args);
+            Span currentSpan = Span.current();
+            currentSpan.setAttribute("testkey", "testvalue");
+            if(null!= currentSpan && null!=currentSpan.getSpanContext()){
 
-            JsonElement element = gson.toJsonTree(formattedMessage);
+                String traceIdValue = Span.current().getSpanContext().getTraceId();
+                String traceIdHexString = traceIdValue.substring(traceIdValue.length() - 16 );
+                long datadogTraceId = Long.parseUnsignedLong(traceIdHexString, 16);
+                String datadogTraceIdString = Long.toUnsignedString(datadogTraceId);
+
+                String spanIdValue = Span.current().getSpanContext().getSpanId();
+                String spanIdHexString = spanIdValue.substring(spanIdValue.length() - 16 );
+                long datadogSpanId = Long.parseUnsignedLong(spanIdHexString, 16);
+                String datadogSpanIdString = Long.toUnsignedString(datadogSpanId);
 
 
-            jsonObject.add("message", element);
+                String traceFlags = Span.current().getSpanContext().getTraceFlags().asHex();
+                MDC.put("dd.span_id", datadogSpanIdString);
+                MDC.put("dd.trace_id", datadogTraceIdString);
+                MDC.put("span_id", datadogSpanIdString);
+                MDC.put("trace_id", datadogTraceIdString);
+                String formattedMessage = String.format(message, args);
+
+                formattedMessage = formattedMessage + " dd.trace_id="+datadogTraceIdString + " dd.span_id="+datadogSpanIdString + " trace_flags="+traceFlags;
+
+                JsonElement element = gson.toJsonTree(formattedMessage);
+
+
+                jsonObject.add("message", element);
+            }
+
+
 
 
         } catch (Exception e) {
@@ -212,6 +237,8 @@ public class StandardJsonLogger implements JsonLogger {
         return this;
     }
 
+
+
     @Override
     public JsonLogger json(String key, JsonElement jsonElement) {
         try {
@@ -263,11 +290,32 @@ public class StandardJsonLogger implements JsonLogger {
     @Override
     public void log() {
 
+
         Span currentSpan = Span.current();
+        currentSpan.setAttribute("testkey", "testvalue");
         if(null!= currentSpan && null!=currentSpan.getSpanContext()){
-            MDC.put("span_id", currentSpan.getSpanContext().getSpanId());
-            MDC.put("trace_id", currentSpan.getSpanContext().getTraceId());
+
+            String traceIdValue = Span.current().getSpanContext().getTraceId();
+            String traceIdHexString = traceIdValue.substring(traceIdValue.length() - 16 );
+            long datadogTraceId = Long.parseUnsignedLong(traceIdHexString, 16);
+            String datadogTraceIdString = Long.toUnsignedString(datadogTraceId);
+
+            String spanIdValue = Span.current().getSpanContext().getSpanId();
+            String spanIdHexString = spanIdValue.substring(spanIdValue.length() - 16 );
+            long datadogSpanId = Long.parseUnsignedLong(spanIdHexString, 16);
+            String datadogSpanIdString = Long.toUnsignedString(datadogSpanId);
+
+            MDC.put("dd.span_id", datadogSpanIdString);
+            MDC.put("dd.trace_id", datadogTraceIdString);
+            MDC.put("datadogTraceIdString", datadogTraceIdString);
+            MDC.put("datadogSpanIdString", datadogSpanIdString);
+            MDC.put("span_id", datadogSpanIdString);
+            MDC.put("trace_id", datadogTraceIdString);
+            MDC.put("orig_span_id", spanIdValue);
+            MDC.put("orig_trace_id", traceIdValue);
         }
+
+
 
         String message = this.formatMessage(levelName);
         if (this.marker == null) {
@@ -283,42 +331,78 @@ public class StandardJsonLogger implements JsonLogger {
 
     protected String formatMessage(String level) {
 
-        // jsonObject.add("level", gson.toJsonTree(level));
+        jsonObject.add("level", gson.toJsonTree(level));
 
-        // if (includeThreadName) {
-        //     jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
-        // }
+        if (includeThreadName) {
+            jsonObject.add("thread_name", gson.toJsonTree(Thread.currentThread().getName()));
+        }
 
-        // if (includeClassName) {
-        //     try {
-        //         jsonObject.add("class", gson.toJsonTree(getCallingClass()));
-        //     } catch (Exception e) {
-        //         jsonObject.add("class", gson.toJsonTree(formatException(e)));
-        //     }
-        // }
+        if (includeClassName) {
+            try {
+                jsonObject.add("class", gson.toJsonTree(getCallingClass()));
+            } catch (Exception e) {
+                jsonObject.add("class", gson.toJsonTree(formatException(e)));
+            }
+        }
 
-        // if (includeLoggerName) {
-        //     jsonObject.add("logger_name", gson.toJsonTree(slf4jLogger.getName()));
-        // }
+        if (includeLoggerName) {
+            jsonObject.add("logger_name", gson.toJsonTree(slf4jLogger.getName()));
+        }
 
-        // try {
-        //     jsonObject.add("@timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
-        // } catch (Exception e) {
-        //     jsonObject.add("@timestamp", gson.toJsonTree(formatException(e)));
-        // }
+        try {
+            jsonObject.add("@timestamp", gson.toJsonTree(getCurrentTimestamp(formatter)));
+        } catch (Exception e) {
+            jsonObject.add("@timestamp", gson.toJsonTree(formatException(e)));
+        }
 
-        // Map mdc = MDC.getCopyOfContextMap();
-        // if (mdc != null && !mdc.isEmpty()) {
-        //     try {
-        //         jsonObject.add("mdc", gson.toJsonTree(mdc));
-        //     } catch (Exception e) {
-        //         jsonObject.add("mdc", gson.toJsonTree(formatException(e)));
-        //     }
-        // }
+        Map mdc = MDC.getCopyOfContextMap();
+        if (mdc != null && !mdc.isEmpty()) {
+            try {
+                jsonObject.add("mdc", gson.toJsonTree(mdc));
+            } catch (Exception e) {
+                jsonObject.add("mdc", gson.toJsonTree(formatException(e)));
+            }
+        }
 
         String message = jsonObject.get("message").getAsString();
         System.out.println(message);
-        return message;
+        if(!message.contains("trace_id")){
+
+            Span currentSpan = Span.current();
+            currentSpan.setAttribute("testkey", "testvalue");
+            if(null!= currentSpan && null!=currentSpan.getSpanContext()){
+
+                String traceIdValue = Span.current().getSpanContext().getTraceId();
+                String traceIdHexString = traceIdValue.substring(traceIdValue.length() - 16 );
+                long datadogTraceId = Long.parseUnsignedLong(traceIdHexString, 16);
+                String datadogTraceIdString = Long.toUnsignedString(datadogTraceId);
+
+                String spanIdValue = Span.current().getSpanContext().getSpanId();
+                String spanIdHexString = spanIdValue.substring(spanIdValue.length() - 16 );
+                long datadogSpanId = Long.parseUnsignedLong(spanIdHexString, 16);
+                String datadogSpanIdString = Long.toUnsignedString(datadogSpanId);
+
+                MDC.put("dd.span_id", datadogSpanIdString);
+                MDC.put("dd.trace_id", datadogTraceIdString);
+                MDC.put("datadogTraceIdString", datadogTraceIdString);
+                MDC.put("datadogSpanIdString", datadogSpanIdString);
+                MDC.put("span_id", datadogSpanIdString);
+                MDC.put("trace_id", datadogTraceIdString);
+                MDC.put("orig_span_id", spanIdValue);
+                MDC.put("orig_trace_id", traceIdValue);
+                String traceFlags = Span.current().getSpanContext().getTraceFlags().asHex();
+                String formattedMessage = message + " dd.trace_id="+datadogTraceIdString + " dd.span_id="+datadogSpanIdString + " trace_flags="+traceFlags;
+
+                jsonObject.remove("message");
+                JsonElement element = gson.toJsonTree(formattedMessage);
+                jsonObject.add("message", element);
+
+            }
+        }
+
+
+        //return message;
+        return jsonObject.get("message").getAsString();
         //return gson.toJson(jsonObject);
 
     }
@@ -353,6 +437,8 @@ public class StandardJsonLogger implements JsonLogger {
         }
         return output.toString();
     }
+
+
 
 
 

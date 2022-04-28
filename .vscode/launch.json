@@ -2,11 +2,29 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch TestMain",
+            "request": "launch",
+            "mainClass": "com.myown.app.sample.TestMain",
+            "projectName": "sample-rest-eks"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-Application<sample-rest-eks>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "mainClass": "com.myown.app.sample.Application",
+            "projectName": "sample-rest-eks",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-TransferDemo<sample-rest-eks>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.myown.app.sample.mdc.TransferDemo",
             "projectName": "sample-rest-eks",
             "args": "",
             "envFile": "${workspaceFolder}/.env"

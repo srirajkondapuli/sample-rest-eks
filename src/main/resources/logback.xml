@@ -12,7 +12,7 @@
         <!-- <url>http://localhost:8000/logs</url> -->
         <url>https://http-intake.logs.datadoghq.com/api/v2/logs</url>
         <contentType>json</contentType>
-        <headers>{"DD-API-Key": "f30163034aa223ea159667b9b862eafe", "DD-APPLICATION-KEY": "d8b677f9e238749148312fe2d27e1f25dd6866ab"}</headers>
+
         <body>                        {
                         "severity": "%level",
                         "service": "${AppName}",

@@ -3,91 +3,20 @@
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
-    <property name="HOME_LOG" value="logs/app.log"/>
-    <property name="CHARSET" value="UTF-8"/>
-    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"/>
-    <springProperty scope="context" name="AppName" source="spring.application.name"/>
+    <property name="HOME_LOG" value="logs/app.log" />
+    <property name="CHARSET" value="UTF-8" />
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+    <!-- <springProperty scope="context" name="AppName" source="spring.application.name" /> -->
 
-    <appender name="HTTP" class="com.myown.app.sample.component.HttpAppender">
-        <!-- <url>http://localhost:8000/logs</url> -->
-        <url>https://http-intake.logs.datadoghq.com/api/v2/logs</url>
-        <contentType>json</contentType>
 
-        <body>                        {
-                        "severity": "%level",
-                        "service": "${AppName}",
-                        "pid": "${PID}",
-                        "thread": "%thread",
-                        "class": "%logger{40}",
-                        "message": "%message",
-                        "event": "%message",
-                        "host": "${hostname}",
-                        "source": "minikube"
-                        }</body>
-        <!-- <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>${PATTERN}</pattern>
-            <charset>${CHARSET}</charset>
-        </encoder> -->
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
-            <providers>
-                <timestamp/>
-                <pattern>
-                    <pattern>
-                        {
-                        "severity": "%level",
-                        "service": "${AppName}",
-                        "dd.trace_id": "%X{trace_id}",
-                        "dd.span_id": "%X{span_id}",
-                        "baggage": "%X{key:-}",
-                        "pid": "${PID:-}",
-                        "thread": "%thread",
-                        "class": "%logger{40}",
-                        "message": "%message",
-                        "event": "%message",
-                        "host": "${hostname}",
-                        "source": "minikube"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
 
-        </encoder>
-    </appender>
-
-    <appender name="STDOUT_TEST" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
         <encoder>
             <pattern>%green([%thread]) %highlight(%-5level) %cyan(%logger{15}:) %yellow(%M\(%line\)) - %msg %n</pattern>
         </encoder>
     </appender>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
-            <providers>
-                <timestamp/>
-                <pattern>
-                    <pattern>
-                        {
-                        "severity": "%level",
-                        "service": "${AppName}",
-                        "dd.trace_id": "%X{trace_id}",
-                        "dd.span_id": "%X{span_id}",
-                        "baggage": "%X{key:-}",
-                        "pid": "${PID:-}",
-                        "thread": "%thread",
-                        "class": "%logger{40}",
-                        "message": "%message",
-                        "event": "%message",
-                        "host": "${hostname}",
-                        "source": "minikube"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
 
-        </encoder>
-    </appender>
     <appender name="FILE_ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_LOG}</file>
 
@@ -103,42 +32,45 @@
         </rollingPolicy>
 
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+            <!-- <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/> -->
             <providers>
-                <timestamp/>
-                <message/>
-                <loggerName/>
-                <threadName/>
-                <logLevel/>
-                <logLevelValue/>
-                <stackTrace/>
-                <logstashMarkers/>
-                <mdc/>
-                <tags/>
+                <timestamp />
+                <message />
+                <loggerName />
+                <threadName />
+                <logLevel />
+                <logLevelValue />
+                <stackTrace />
+                <logstashMarkers />
+                <mdc />
+                <tags />
             </providers>
         </encoder>
     </appender>
 
-    <logger name="com.myown" level="debug" additivity="false">
-        <appender-ref ref="FILE_ROLLING"/>
-        <appender-ref ref="STDOUT"/>
+    <logger name="com.myown" level="info" additivity="false">
+        <appender-ref ref="FILE_ROLLING" />
+        <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="org.springframework" level="debug" additivity="false">
-        <appender-ref ref="FILE_ROLLING"/>
-        <appender-ref ref="STDOUT"/>
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="FILE_ROLLING" />
+        <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="io.opentelemetry" level="debug" additivity="false">
-        <appender-ref ref="FILE_ROLLING"/>
-        <appender-ref ref="STDOUT"/>
+    <logger name="io.opentelemetry" level="info" additivity="false">
+        <appender-ref ref="FILE_ROLLING" />
+        <appender-ref ref="STDOUT" />
     </logger>
     <logger name="com.myown" level="info" additivity="false">
-        <appender-ref ref="FILE_ROLLING"/>
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="HTTP"/>
+        <appender-ref ref="FILE_ROLLING" />
+        <appender-ref ref="STDOUT" />
+
     </logger>
-    <root level="debug">
-        <appender-ref ref="FILE_ROLLING"/>
-        <appender-ref ref="STDOUT"/>
+    <root level="info">
+        <appender-ref ref="FILE_ROLLING" />
+
+
+        <appender-ref ref="STDOUT" />
+
     </root>
 
 </configuration>

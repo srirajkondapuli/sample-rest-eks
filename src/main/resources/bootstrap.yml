@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: java-rest-eks-app
 
   cloud:
     discovery:
@@ -11,35 +9,34 @@ spring:
           enabled: false
         composite-indicator:
           enabled: false
-                 
+
     config:
       discovery:
-        enabled: false          
+        enabled: false
       fail-fast: true
       enabled: false
-  
+
     kubernetes:
       discovery:
         enabled: false
-      config:       
+      config:
         enabled: false
         enable-api: false
         sources:
-          - name: ${spring.application.name}-configmap   
+          - name: ${spring.application.name}-configmap
       secrets:
         enabled: false
         enable-api: false
         sources:
-          - name: ${spring.application.name}-secret          
+          - name: ${spring.application.name}-secret
       reload:
         monitoring-config-maps: false
         monitoring-secrets: false
         enabled: false
-        strategy: refresh
+        strategy: reload
         mode: event
-        period: 10000 
-                     
- 
+        period: 10000
+
 health:
   config:
-    enabled: true   
+    enabled: true

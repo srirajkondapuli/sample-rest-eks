@@ -59,11 +59,11 @@ dependencies {
 
 
 
+    implementation("de.idealo.whitelabels:logstash-logback-http:1.1.0")
 
 
     implementation("io.swagger:swagger-annotations:1.6.5")
 
-    implementation("io.opentelemetry.instrumentation:opentelemetry-spring-starter:1.11.1-alpha")
 
     implementation("org.json:json:20220320")
 

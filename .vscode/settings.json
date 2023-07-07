@@ -1,6 +1,11 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.project.sourcePaths": [
-        "build/generated/src/main/java"
-    ]
+        "build/generated/src/main/java",
+        "src/main/java",
+        "src/test/java",
+        "src/main/resources"
+    ],
+    "java.project.outputPath": "bin",
+    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
 }

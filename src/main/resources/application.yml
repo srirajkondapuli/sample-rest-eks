@@ -3,8 +3,8 @@
 spring:
   profiles:
     active: default
-  application:
-    name: "java-rest-eks"
+  # application:
+  #   name: ${spring.application.name}
   main:
     allow-bean-definition-overriding: true
   cloud:
@@ -19,6 +19,7 @@ spring:
           enabled: false
         composite-indicator:
           enabled: false
+
     kubernetes:
       discovery:
         enabled: true
@@ -26,13 +27,13 @@ spring:
       config:
         enabled: false
         enable-api: false
-        namespace: java-rest-eks
+        namespace: ${kubernetes.namespace}
         sources:
           - name: ${spring.application.name}-configmap
       secrets:
         enabled: false
         enable-api: false
-        namespace: java-rest-eks
+        namespace: ${kubernetes.namespace}
         sources:
           - name: ${spring.application.name}-secret
 
@@ -40,9 +41,10 @@ application:
   encryption:
     url: http://localhost:8000
 
-
 server:
   port: 9000
+  servlet:
+    contextPath: /tokenization
   cloud:
     config:
       fail-fast: true
@@ -61,7 +63,7 @@ kubernetes:
     enabled: false
     basePath: /app/secrets
     accounts:
-    - java-rest-eks-app-secret
+      - ${spring.application.name}-secret
 management:
   endpoints:
     enabled-by-default: true
@@ -82,7 +84,7 @@ management:
         enabled: true
 
 ---
-  # application configuration for profile=kubernetes
+# application configuration for profile=kubernetes
 spring:
   config:
     activate:
@@ -97,10 +99,8 @@ spring:
     discovery:
       enabled: true
 ---
-  # application configuration for profile=kubernetes
+# application configuration for profile=kubernetes
 spring:
   config:
     activate:
       on-profile: integration
-
-

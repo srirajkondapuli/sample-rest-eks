@@ -3,8 +3,6 @@ package com.myown.app.sample.service;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import javax.annotation.PostConstruct;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +23,7 @@ public class DefaultCredentialProvider implements CredentialProvider {
         return "dummySecret";
     }
 
-    @PostConstruct
+    @jakarta.annotation.PostConstruct
     public void refresh() {
         SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// dd/MM/yyyy
         String strDate = sdfDate.format(Calendar.getInstance().getTime());

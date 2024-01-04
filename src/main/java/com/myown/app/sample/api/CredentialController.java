@@ -1,6 +1,8 @@
 
 package com.myown.app.sample.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,16 +12,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.myown.app.sample.service.CredentialProvider;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
 @RequestMapping("/api/credential")
-@Slf4j
+// @Slf4j
 // @CustomLog
 public class CredentialController {
     private final CredentialProvider credentialProvider;
-    // public static Logger logger =
-    // LoggerFactory.getLogger(CredentialController.class);
+    public static Logger log =
+    LoggerFactory.getLogger(CredentialController.class);
 
     public CredentialController(CredentialProvider credentialProvider) {
 

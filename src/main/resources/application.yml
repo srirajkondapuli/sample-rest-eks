@@ -7,6 +7,7 @@ spring:
   #   name: ${spring.application.name}
   main:
     allow-bean-definition-overriding: true
+    web-application-type: reactive
   cloud:
     config:
       fail-fast: true
@@ -104,3 +105,13 @@ spring:
   config:
     activate:
       on-profile: integration
+logging:
+  level:
+    root: DEBUG
+    com:
+      myown: DEBUG
+    org:
+      gradle: DEBUG
+      springframework:
+        web: DEBUG
+        security: DEBUG

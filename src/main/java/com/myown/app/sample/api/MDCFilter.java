@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
+
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
-import lombok.extern.slf4j.Slf4j;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 // To convert to a Spring Boot Filter
 // Uncomment @Component and Comment our @WebFilter annotation
 @Component
-@Slf4j
-@WebFilter(filterName = "mdcFilter", urlPatterns = {"/*"})
-public class MDCFilter implements Filter {
+// @Slf4j
+@jakarta.servlet.annotation.WebFilter(filterName = "mdcFilter", urlPatterns = {"/*"})
+public class MDCFilter implements jakarta.servlet.Filter {
 
     @Override
     public void destroy() {}
@@ -65,4 +64,6 @@ public class MDCFilter implements Filter {
 
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {}
+
+
 }

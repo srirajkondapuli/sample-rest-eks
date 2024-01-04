@@ -7,5 +7,6 @@
         "src/main/resources"
     ],
     "java.project.outputPath": "bin",
-    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home"
+    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/amazon-corretto-17.jdk/Contents/Home",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

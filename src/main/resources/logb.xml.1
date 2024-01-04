@@ -5,15 +5,16 @@
     </contextListener>
     <property name="HOME_LOG" value="logs/app.log" />
     <property name="CHARSET" value="UTF-8" />
-    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+    <property name="PATTERN"
+        value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
     <!-- <springProperty scope="context" name="AppName" source="spring.application.name" /> -->
-
 
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
         <encoder>
-            <pattern>%green([%thread]) %highlight(%-5level) %cyan(%logger{15}:) %yellow(%M\(%line\)) - %msg %n</pattern>
+            <pattern>%green([%thread]) %highlight(%-5level) %cyan(%logger{15}:) %yellow(%M\(%line\))
+                - %msg %n</pattern>
         </encoder>
     </appender>
 
@@ -32,7 +33,8 @@
         </rollingPolicy>
 
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <!-- <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/> -->
+            <!-- <jsonGeneratorDecorator
+            class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/> -->
             <providers>
                 <timestamp />
                 <message />
@@ -48,24 +50,24 @@
         </encoder>
     </appender>
 
-    <logger name="com.myown" level="info" additivity="false">
+    <logger name="com.myown" level="debug" additivity="false">
         <appender-ref ref="FILE_ROLLING" />
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="org.springframework" level="info" additivity="false">
+    <logger name="org.springframework" level="debug" additivity="false">
         <appender-ref ref="FILE_ROLLING" />
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="io.opentelemetry" level="info" additivity="false">
+    <logger name="io.opentelemetry" level="debug" additivity="false">
         <appender-ref ref="FILE_ROLLING" />
         <appender-ref ref="STDOUT" />
     </logger>
-    <logger name="com.myown" level="info" additivity="false">
+    <logger name="com.myown" level="debug" additivity="false">
         <appender-ref ref="FILE_ROLLING" />
         <appender-ref ref="STDOUT" />
 
     </logger>
-    <root level="info">
+    <root level="DEBUG">
         <appender-ref ref="FILE_ROLLING" />
 
 
